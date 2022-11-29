@@ -13,7 +13,7 @@ import numpy as np
 
 # ???
 import torch.optim as optim
-
+import sys
 
 transform = transforms.Compose(
     [transforms.ToTensor(),
@@ -36,13 +36,6 @@ def imshow(img):
     npimg = img.numpy()
     plt.imshow(np.transpose(npimg, (1, 2, 0)))
     plt.show()
-
-# get some random training images
-dataiter = iter(trainloader)
-images, labels = next(dataiter)
-
-
-
 
 # Neural network
 class Net(nn.Module):
@@ -74,21 +67,27 @@ optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
 # Load trained model from previous run
 PATH = './image_classifier_nn_dumb.pth'
+if len(sys.argv) == 2:
+    PATH = './' + sys.argv[1] + '.pth'
 net.load_state_dict(torch.load(PATH))
 
-outputs = net(images)
+# get some random training images
+dataiter = iter(trainloader)
+for i in range(5):
+    images, labels = next(dataiter)
+    outputs = net(images)
 
-# Initial Output
-# print labels
-print(' '.join(f'{classes[labels[j]]:5s}' for j in range(batch_size)))
-outputs = net(images)
+    # Initial Output
+    # print labels
+    print(' '.join(f'{classes[labels[j]]:5s}' for j in range(batch_size)))
+    outputs = net(images)
 
-# Present image labels with the highest predicted values
-_, predicted = torch.max(outputs, 1)
-print('Predicted: ', ' '.join(f'{classes[predicted[j]]:5s}' for j in range(4)))
+    # Present image labels with the highest predicted values
+    _, predicted = torch.max(outputs, 1)
+    print('Predicted: ', ' '.join(f'{classes[predicted[j]]:5s}' for j in range(4)))
 
-# show images
-imshow(torchvision.utils.make_grid(images))
+    # show images
+    imshow(torchvision.utils.make_grid(images))
 
 correct = 0
 total = 0
