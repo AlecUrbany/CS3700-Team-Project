@@ -21,15 +21,11 @@ transform = transforms.Compose(
 
 batch_size = 4
 
-trainset = torchvision.datasets.CIFAR10(root='./data', train=True,
-                                        download=True, transform=transform)
-trainloader = torch.utils.data.DataLoader(trainset, batch_size=batch_size,
-                                          shuffle=True, num_workers=0)
+trainset = torchvision.datasets.CIFAR10(root='./data', train=True, download=True, transform=transform)
+trainloader = torch.utils.data.DataLoader(trainset, batch_size=batch_size, shuffle=True, num_workers=0)
 
-testset = torchvision.datasets.CIFAR10(root='./data', train=False,
-                                       download=True, transform=transform)
-testloader = torch.utils.data.DataLoader(testset, batch_size=batch_size,
-                                         shuffle=False, num_workers=0)
+testset = torchvision.datasets.CIFAR10(root='./data', train=False, download=True, transform=transform)
+testloader = torch.utils.data.DataLoader(testset, batch_size=batch_size, shuffle=False, num_workers=0)
 
 classes = ('plane', 'car', 'bird', 'cat',
            'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
@@ -45,10 +41,7 @@ def imshow(img):
 dataiter = iter(trainloader)
 images, labels = next(dataiter)
 
-# show images
-imshow(torchvision.utils.make_grid(images))
-# print labels
-print(' '.join(f'{classes[labels[j]]:5s}' for j in range(batch_size)))
+
 
 
 # Neural network
@@ -78,23 +71,24 @@ net = Net()
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
-  
-
-# print('Finished Training')
-
-# Save the trained model
-PATH = './cifar_net.pth'
-# torch.save(net.state_dict(), PATH)
-
 
 # Load trained model from previous run
-# net.load_state_dict(torch.load(PATH))
+PATH = './image_classifier_nn_dumb.pth'
+net.load_state_dict(torch.load(PATH))
 
+outputs = net(images)
+
+# Initial Output
+# print labels
+print(' '.join(f'{classes[labels[j]]:5s}' for j in range(batch_size)))
 outputs = net(images)
 
 # Present image labels with the highest predicted values
 _, predicted = torch.max(outputs, 1)
 print('Predicted: ', ' '.join(f'{classes[predicted[j]]:5s}' for j in range(4)))
+
+# show images
+imshow(torchvision.utils.make_grid(images))
 
 correct = 0
 total = 0
