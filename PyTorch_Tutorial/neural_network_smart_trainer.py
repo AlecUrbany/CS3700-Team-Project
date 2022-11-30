@@ -14,7 +14,7 @@ import numpy as np
 # ???
 import torch.optim as optim
 
-PATH = './image_classifier_nn_wd_test_v2.pth'
+PATH = './image_classifier_nn_wd_test_v5.pth'
 
 transform = transforms.Compose(
     [transforms.ToTensor(),
@@ -55,37 +55,36 @@ net = Net()
 
 # ???
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9, weight_decay=0.001)
+optimizer = optim.SGD(net.parameters(), lr=0.01, momentum=0.9, weight_decay=0.001)
 
-while True:
-    net.load_state_dict(torch.load(PATH))
+#net.load_state_dict(torch.load(PATH))
 
-    # Training the network
-    for epoch in range(5):  # loop over the dataset multiple times
+# Training the network
+for epoch in range(5):  # loop over the dataset multiple times
 
-        trainloader = torch.utils.data.DataLoader(trainset, batch_size=batch_size, shuffle=True, num_workers=0)
+    trainloader = torch.utils.data.DataLoader(trainset, batch_size=batch_size, shuffle=True, num_workers=0)
 
-        running_loss = 0.0
-        for i, data in enumerate(trainloader, 0):
-            # get the inputs; data is a list of [inputs, labels]
-            inputs, labels = data
+    running_loss = 0.0
+    for i, data in enumerate(trainloader, 0):
+        # get the inputs; data is a list of [inputs, labels]
+        inputs, labels = data
 
-            # zero the parameter gradients
-            optimizer.zero_grad()
+        # zero the parameter gradients
+        optimizer.zero_grad()
 
-            # forward + backward + optimize
-            outputs = net(inputs)
-            loss = criterion(outputs, labels)
-            loss.backward()
-            optimizer.step()
+        # forward + backward + optimize
+        outputs = net(inputs)
+        loss = criterion(outputs, labels)
+        loss.backward()
+        optimizer.step()
 
-            # print statistics
-            running_loss += loss.item()
-            if i % 2000 == 1999:    # print every 2000 mini-batches
-                print(f'[{epoch + 1}, {i + 1:5d}] loss: {running_loss / 2000:.3f}')
-                running_loss = 0.0
+        # print statistics
+        running_loss += loss.item()
+        if i % 2000 == 1999:    # print every 2000 mini-batches
+            print(f'[{epoch + 1}, {i + 1:5d}] loss: {running_loss / 2000:.3f}')
+            running_loss = 0.0
 
-    print('Finished Training')
+print('Finished Training')
 
-    # Save the trained neural network
-    torch.save(net.state_dict(), PATH)
+# Save the trained neural network
+torch.save(net.state_dict(), PATH)
