@@ -14,7 +14,7 @@ import numpy as np
 # ???
 import torch.optim as optim
 
-PATH = './image_classifier_nn_wd_test.pth'
+PATH = './image_classifier_nn_wd_test_v2.pth'
 
 transform = transforms.Compose(
     [transforms.ToTensor(),
@@ -23,7 +23,6 @@ transform = transforms.Compose(
 batch_size = 4
 
 trainset = torchvision.datasets.CIFAR10(root='./data', train=True, download=True, transform=transform)
-trainloader = torch.utils.data.DataLoader(trainset, batch_size=batch_size, shuffle=True, num_workers=0)
 
 testset = torchvision.datasets.CIFAR10(root='./data', train=False, download=True, transform=transform)
 testloader = torch.utils.data.DataLoader(testset, batch_size=batch_size, shuffle=False, num_workers=0)
@@ -63,6 +62,8 @@ while True:
 
     # Training the network
     for epoch in range(5):  # loop over the dataset multiple times
+
+        trainloader = torch.utils.data.DataLoader(trainset, batch_size=batch_size, shuffle=True, num_workers=0)
 
         running_loss = 0.0
         for i, data in enumerate(trainloader, 0):
